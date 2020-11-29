@@ -1,1 +1,2 @@
-# hw04_tests
+# Yatube. Stage 3: tests.
+Testing functions of Yatube
