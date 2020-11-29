@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %} Профиль {{ author.get_full_name }}{% endblock %}
+{% block header %}{{ author.get_full_name }}{% endblock %}
+{% block content %}
+<main role="main" class="container">
+    <div class="row">
+            <div class="col-md-3 mb-3 mt-1">
+                    <div class="card">
+                            <div class="card-body">
+                                    <div class="h2">
+                                        {{ author.get_full_name }}
+                                    </div>
+                                    <div class="h3 text-muted">
+                                         {{ author.username }}                                        
+                                    </div>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                            <div class="h6 text-muted">
+                                            Подписчиков: XXX <br />
+                                            Подписан: XXX
+                                            </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                            <div class="h6 text-muted">
+                                                {{ author.posts.count }}                                                
+                                            </div>
+                                    </li>
+                            </ul>
+                    </div>
+            </div>
+
+            <div class="col-md-9">                
+
+                <!-- Начало блока с отдельным постом --> 
+                    <div class="card mb-3 mt-1 shadow-sm">
+                            <div class="card-body">
+                                    <p class="card-text">
+                                            <!-- Ссылка на страницу автора в атрибуте href; username автора в тексте ссылки -->
+                                            <a href="{% url 'profile' username=author.username %}"><strong class="d-block text-gray-dark">{{author.get_full_name}}</strong></a>
+                                            {% for post in page %}
+                                                <p>{{ post.text }}</p>                                             
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group ">
+                                                    {% if user.is_authenticated %}
+                                                    <a class="btn btn-sm text-muted" href="{% url 'post' username=post.author.username post_id=post.id %}" role="button">Добавить комментарий</a>                                                    
+                                                        {% if user == author %}
+                                                    <a class="btn btn-sm text-muted" href="{% url 'post_edit' username=post.author.username post_id=post.id %}" role="button">Редактировать</a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                            </div>                                            
+                                            <small class="text-muted">{{ post.pub_date|date:"d M Y"|linebreaksbr }}</small>
+                                                                                       
+                                    </div>
+                                    <hr> 
+                                    {% endfor %}
+
+                            </div>
+                    </div>
+                <!-- Конец блока с отдельным постом --> 
+
+                <!-- Остальные посты -->  
+
+                <!-- Здесь постраничная навигация паджинатора -->
+                {% if page.has_other_pages %}
+                {% include "paginator.html" with items=page paginator=paginator %}
+                {% endif %}
+     </div>
+    </div>
+</main>
+{% endblock %}
